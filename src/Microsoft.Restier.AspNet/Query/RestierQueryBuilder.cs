@@ -83,6 +83,14 @@ namespace Microsoft.Restier.AspNet.Query
                 var keySegment = (KeySegment)path.Segments[2];
                 return GetPathKeyValues(keySegment);
             }
+            else if (path.PathTemplate == "~/entityset/key/navigation")
+            {
+                return GetNavigationPathKeyValues(path.Segments);
+            }
+            else if (path.PathTemplate == "~/entityset")
+            {
+                return null;
+            }
             else
             {
                 throw new InvalidOperationException(string.Format(
@@ -90,6 +98,35 @@ namespace Microsoft.Restier.AspNet.Query
                     Resources.InvalidPathTemplateInRequest,
                     "~/entityset/key"));
             }
+        }
+
+        private static IReadOnlyDictionary<string, object> GetNavigationPathKeyValues(IEnumerable<ODataPathSegment> segments)
+        {
+            if (segments.Count() != 3)
+            {
+                throw new ArgumentException(nameof(segments));
+            }
+
+            var result = new Dictionary<string, object>();
+            var keySegment = (KeySegment)segments.ElementAt(1);
+            var navigationPropertySegment = (NavigationPropertySegment)segments.ElementAt(2);
+
+            if (keySegment.Keys.Count() > 1)
+            {
+                throw new NotSupportedException("Complex keys navigation is not supported yet.");
+            }
+
+            if (navigationPropertySegment.EdmType is EdmEntityType navivationEdmType)
+            {
+                var key = navivationEdmType.DeclaredKey.First().Name;
+                var value = keySegment.Keys.First().Value;
+
+                result[key] = value;
+
+                return result;
+            }
+
+            return null;
         }
 
         private static IReadOnlyDictionary<string, object> GetPathKeyValues(

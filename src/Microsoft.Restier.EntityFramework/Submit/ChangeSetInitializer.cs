@@ -60,6 +60,10 @@ namespace Microsoft.Restier.EntityFramework
                 {
                     resource = set.Create();
                     SetValues(resource, resourceType, entry.LocalValues);
+                    if (entry.ResourceKey != null)
+                    {
+                        SetValues(resource, resourceType, entry.ResourceKey);
+                    }
                     set.Add(resource);
                 }
                 else if (entry.EntitySetOperation == RestierEntitySetOperation.Delete)

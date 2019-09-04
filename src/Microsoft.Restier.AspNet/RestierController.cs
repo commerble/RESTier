@@ -159,7 +159,7 @@ namespace Microsoft.Restier.AspNet
                 expectedEntityType.GetClrType(Api.ServiceProvider),
                 actualEntityType.GetClrType(Api.ServiceProvider),
                 RestierEntitySetOperation.Insert,
-                null,
+                RestierQueryBuilder.GetPathKeyValues(path),
                 null,
                 edmEntityObject.CreatePropertyDictionary(actualEntityType, api, true));
 
