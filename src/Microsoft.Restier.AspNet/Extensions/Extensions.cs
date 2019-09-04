@@ -91,12 +91,19 @@ namespace Microsoft.Restier.AspNet
                         value = CreatePropertyDictionary(complexObj, complexObj.ActualEdmType, api, isCreation);
                     }
 
-                    //RWM: Other entities are not allowed in the payload until we support Delta payloads.
+                    // Commerble allow post eintity with navigation props.
+
                     if (value is EdmEntityObject entityObj)
                     {
-                        // TODO: RWM: Turn this message into a language resource.
-                        throw new StatusCodeException(HttpStatusCode.BadRequest, "Navigation Properties were also present in the payload. Please remove related entities from your request and try again.");
+                        value = CreatePropertyDictionary(entityObj, entityObj.ActualEdmType, api, isCreation);
                     }
+                    
+                    ////RWM: Other entities are not allowed in the payload until we support Delta payloads.
+                    //if (value is EdmEntityObject entityObj)
+                    //{
+                    //    // TODO: RWM: Turn this message into a language resource.
+                    //    throw new StatusCodeException(HttpStatusCode.BadRequest, "Navigation Properties were also present in the payload. Please remove related entities from your request and try again.");
+                    //}
 
                     propertyValues.Add(propertyName, value);
                 }
