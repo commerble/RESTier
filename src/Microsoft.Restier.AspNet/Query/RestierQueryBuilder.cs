@@ -126,6 +126,31 @@ namespace Microsoft.Restier.AspNet.Query
                 return result;
             }
 
+            if (navigationPropertySegment.EdmType is EdmCollectionType navivationCollectionEdmType)
+            {
+                if (navivationCollectionEdmType.ElementType.Definition is EdmEntityType navivationItemEdmType)
+                {
+                    foreach (var navProp in navivationItemEdmType.DeclaredNavigationProperties())
+                    {
+                        if (navProp.ReferentialConstraint != null && navProp.ReferentialConstraint.PropertyPairs != null)
+                        {
+                            foreach (var pair in navProp.ReferentialConstraint.PropertyPairs)
+                            {
+                                foreach (var key in keySegment.Keys)
+                                {
+                                    if (key.Key == pair.PrincipalProperty.Name)
+                                    {
+                                        result[pair.DependentProperty.Name] = key.Value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return result;
+                }
+            }
+
             return null;
         }
 
