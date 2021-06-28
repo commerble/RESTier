@@ -35,7 +35,7 @@
     <!-- Contact email address for NuGet packages and Linux installers. -->
     <MaintainerEmail>odata@nimbleapps.cloud</MaintainerEmail>
 
-    <PackageIconUrl>https://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
+    <!--<PackageIconUrl>https://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>-->
     <PackageProjectUrl>https://restier.readthedocs.io/en/latest/</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>odata;wcf data services;</PackageTags>
