@@ -97,6 +97,26 @@ namespace Microsoft.Restier.AspNet
                     {
                         value = CreatePropertyDictionary(entityObj, entityObj.ActualEdmType, api, isCreation);
                     }
+
+                    if (value is EdmEntityObjectCollection collection)
+                    {
+                        value = collection.Select(item =>
+                        {
+                            if (item is EdmComplexObject complexObjItem)
+                            {
+                                return CreatePropertyDictionary(complexObjItem, complexObjItem.ActualEdmType, api, isCreation);
+                            }
+
+                            // Commerble allow post eintity with navigation props.
+
+                            if (item is EdmEntityObject entityObjItem)
+                            {
+                                return CreatePropertyDictionary(entityObjItem, entityObjItem.ActualEdmType, api, isCreation);
+                            }
+
+                            throw new NotSupportedException();
+                        }).ToList();
+                    }
                     
                     ////RWM: Other entities are not allowed in the payload until we support Delta payloads.
                     //if (value is EdmEntityObject entityObj)

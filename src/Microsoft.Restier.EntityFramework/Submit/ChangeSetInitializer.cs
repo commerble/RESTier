@@ -241,6 +241,24 @@ namespace Microsoft.Restier.EntityFramework
                 value = ConvertToEfValue(propertyInfo.PropertyType, value);
                 if (value != null && !propertyInfo.PropertyType.IsInstanceOfType(value))
                 {
+                    if (value is IEnumerable<IReadOnlyDictionary<string, object>> collection)
+                    {
+                        var itemType = propertyInfo.PropertyType.GenericTypeArguments.First();
+                        var listType = typeof(List<>).MakeGenericType(itemType);
+                        var addMethod = listType.GetMethod("Add", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                        var list = Activator.CreateInstance(listType);
+                        foreach (var item in collection)
+                        {
+                            var itemValue = Activator.CreateInstance(itemType);
+                            SetValues(itemValue, itemType, item);
+                            addMethod.Invoke(list, new[] { itemValue });
+                        }
+
+                        propertyInfo.SetValue(instance, list);
+
+                        return;
+                    }
+
                     if (!(value is IReadOnlyDictionary<string, object> dic))
                     {
                         propertyInfo.SetValue(instance, value);

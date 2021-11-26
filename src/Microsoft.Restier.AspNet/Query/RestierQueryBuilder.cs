@@ -14,6 +14,20 @@ using ODataPath = Microsoft.AspNet.OData.Routing.ODataPath;
 
 namespace Microsoft.Restier.AspNet.Query
 {
+    /// <summary>
+    /// Custom configuration for RestierQueryBuilder
+    /// </summary>
+    public static class RestierQueryBuilderConfig
+    {
+        /// <summary>
+        /// Mapping for FK constraints
+        /// </summary>
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+        public static Dictionary<string, string> FkMappings = new Dictionary<string, string>
+#pragma warning restore CA2211 // Non-constant fields should not be visible
+        {
+        };
+    }
     internal class RestierQueryBuilder
     {
         private const string DefaultNameOfParameterExpression = "currentValue";
@@ -99,7 +113,6 @@ namespace Microsoft.Restier.AspNet.Query
                     "~/entityset/key"));
             }
         }
-
         private static IReadOnlyDictionary<string, object> GetNavigationPathKeyValues(IEnumerable<ODataPathSegment> segments)
         {
             if (segments.Count() != 3)
@@ -108,6 +121,7 @@ namespace Microsoft.Restier.AspNet.Query
             }
 
             var result = new Dictionary<string, object>();
+            var entitySetSegment = (EntitySetSegment)segments.ElementAt(0);
             var keySegment = (KeySegment)segments.ElementAt(1);
             var navigationPropertySegment = (NavigationPropertySegment)segments.ElementAt(2);
 
@@ -144,6 +158,14 @@ namespace Microsoft.Restier.AspNet.Query
                                     }
                                 }
                             }
+                        }
+                    }
+
+                    if (result.Count == 0)
+                    {
+                        var fk = $"{entitySetSegment.EdmType.AsElementType().FullTypeName()}:{navigationPropertySegment.EdmType.AsElementType().FullTypeName()}";
+                        if (RestierQueryBuilderConfig.FkMappings.TryGetValue(fk, out var propName)) {
+                            result[propName] = keySegment.Keys.First().Value;
                         }
                     }
 
