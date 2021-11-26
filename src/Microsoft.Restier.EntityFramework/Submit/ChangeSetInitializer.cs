@@ -256,13 +256,13 @@ namespace Microsoft.Restier.EntityFramework
 
                         propertyInfo.SetValue(instance, list);
 
-                        return;
+                        continue;
                     }
 
                     if (!(value is IReadOnlyDictionary<string, object> dic))
                     {
                         propertyInfo.SetValue(instance, value);
-                        return;
+                        continue;
                         //throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, Resources.UnsupportedPropertyType, propertyPair.Key));
                     }
 
