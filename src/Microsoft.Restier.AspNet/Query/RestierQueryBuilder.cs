@@ -132,11 +132,11 @@ namespace Microsoft.Restier.AspNet.Query
 
             if (navigationPropertySegment.EdmType is EdmEntityType navivationEdmType)
             {
-                var key = navivationEdmType.DeclaredKey.First().Name;
-                var value = keySegment.Keys.First().Value;
-
-                result[key] = value;
-
+                var fk = $"{entitySetSegment.EdmType.AsElementType().FullTypeName()}:{navigationPropertySegment.EdmType.AsElementType().FullTypeName()}";
+                if (RestierQueryBuilderConfig.FkMappings.TryGetValue(fk, out var propName))
+                {
+                    result[propName] = keySegment.Keys.First().Value;
+                }
                 return result;
             }
 
