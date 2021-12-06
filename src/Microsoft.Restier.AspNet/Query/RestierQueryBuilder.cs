@@ -132,12 +132,7 @@ namespace Microsoft.Restier.AspNet.Query
 
             if (navigationPropertySegment.EdmType is EdmEntityType navivationEdmType)
             {
-                var fk = $"{entitySetSegment.EdmType.AsElementType().FullTypeName()}:{navigationPropertySegment.EdmType.AsElementType().FullTypeName()}";
-                if (RestierQueryBuilderConfig.FkMappings.TryGetValue(fk, out var propName))
-                {
-                    result[propName] = keySegment.Keys.First().Value;
-                }
-                return result;
+                throw new NotSupportedException("Navigation property access is not supported yet");
             }
 
             if (navigationPropertySegment.EdmType is EdmCollectionType navivationCollectionEdmType)
