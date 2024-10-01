@@ -36,6 +36,13 @@ namespace Microsoft.Restier.Core
 
                 foreach (PropertyDescriptor property in properties)
                 {
+                    if (dataModificationItem.EntitySetOperation == RestierEntitySetOperation.Delete)
+                    {
+                        if (!dataModificationItem.ResourceKey.ContainsKey(property.Name))
+                        {
+                            continue;
+                        }
+                    }
                     validationContext.MemberName = property.Name;
 
                     var validationAttributes = property.Attributes.OfType<ValidationAttribute>();
